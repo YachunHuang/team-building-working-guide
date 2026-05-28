@@ -46,6 +46,15 @@ export class StorageService {
     return this.fetchFromSheets();
   }
 
+  /** 依姓名查詢既有資料（忽略前後空白與大小寫差異） */
+  async getByName(name: string): Promise<ManualData | null> {
+    const normalizedName = this.normalizeName(name);
+    if (!normalizedName) return null;
+
+    const all = await this.getAll();
+    return all.find((manual) => this.normalizeName(manual.name) === normalizedName) ?? null;
+  }
+
   /**
    * 訂閱資料更新（Sheets 版：每 10 秒輪詢）。
    * 未設定 scriptUrl 時自動 fallback 至 localStorage。
@@ -122,8 +131,10 @@ export class StorageService {
 
   private saveLocal(data: ManualData): void {
     const all = this.getAllLocal();
-    const idx = all.findIndex((m) => m.name === data.name);
-    if (idx >= 0) all[idx] = data; else all.push(data);
+    const normalizedName = this.normalizeName(data.name);
+    const nextData = { ...data, name: data.name.trim() };
+    const idx = all.findIndex((m) => this.normalizeName(m.name) === normalizedName);
+    if (idx >= 0) all[idx] = nextData; else all.push(nextData);
     localStorage.setItem(LOCAL_KEY, JSON.stringify(all));
   }
 
@@ -132,6 +143,10 @@ export class StorageService {
       const raw = localStorage.getItem(LOCAL_KEY);
       return raw ? (JSON.parse(raw) as ManualData[]) : [];
     } catch { return []; }
+  }
+
+  private normalizeName(name: string): string {
+    return name.trim().toLocaleLowerCase();
   }
 }
 

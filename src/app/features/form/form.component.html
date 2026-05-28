@@ -23,10 +23,13 @@
             <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">姓名 <span class="text-fuchsia-600">*</span></span>
           </div>
           <input type="text" formControlName="name" placeholder="請輸入你的名字"
+            (blur)="onNameBlur()"
             class="w-full rounded-lg px-4 py-2.5 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
             [ngClass]="isFieldInvalid('name') ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
           />
           <p *ngIf="isFieldInvalid('name')" class="text-red-400 text-sm mt-1 font-mono">請填寫姓名</p>
+          <p *ngIf="!isFieldInvalid('name') && existingManualLoaded" class="text-teal-600 text-sm mt-1">{{ existingManualMessage }}</p>
+          <p *ngIf="!isFieldInvalid('name') && !existingManualLoaded" class="text-gray-400 text-sm mt-1">若已有同名資料，離開欄位後會自動帶入供你編輯更新。</p>
         </div>
 
         <!-- 關於我 -->

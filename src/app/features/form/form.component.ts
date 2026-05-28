@@ -20,6 +20,8 @@ import { Component } from '@angular/core';
 })
 export class FormComponent {
   form: FormGroup;
+  existingManualLoaded = false;
+  existingManualMessage = '';
   private readonly minItemsMap: Record<'about' | 'qualities' | 'fears' | 'likes' | 'pressure' | 'environment', number> = {
     about: 1,
     qualities: 3,
@@ -84,7 +86,32 @@ export class FormComponent {
     }
   }
 
-  onSubmit(): void {
+  async onNameBlur(): Promise<void> {
+    const nameControl = this.form.get('name');
+    const trimmedName = nameControl?.value?.trim() ?? '';
+
+    this.resetExistingManualState();
+
+    if (!trimmedName) {
+      nameControl?.setValue('', { emitEvent: false });
+      return;
+    }
+
+    nameControl?.setValue(trimmedName, { emitEvent: false });
+
+    try {
+      const existing = await this.storageService.getByName(trimmedName);
+      if (!existing) return;
+
+      this.patchForm(existing);
+      this.existingManualLoaded = true;
+      this.existingManualMessage = '已載入同名資料，這次送出會直接更新原內容。';
+    } catch (err) {
+      console.error('[FormComponent] 讀取同名資料失敗', err);
+    }
+  }
+
+  async onSubmit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       console.warn('[FormComponent] 表單驗證未通過', this.form.errors, this.form.value);
@@ -95,7 +122,7 @@ export class FormComponent {
       const raw = this.form.value;
       const toArr = (arr: string[]) => arr.map((s: string) => s.trim()).filter(Boolean);
       const data = {
-        name: raw.name,
+        name: raw.name.trim(),
         about: toArr(raw.about),
         qualities: toArr(raw.qualities),
         fears: toArr(raw.fears),
@@ -109,7 +136,7 @@ export class FormComponent {
       const binStr = Array.from(bytes, (b) => String.fromCharCode(b)).join('');
       const encoded = btoa(binStr);
 
-      this.storageService.save(data as ManualData).catch(err => console.error('[儲存失敗]', err));
+      await this.storageService.save(data as ManualData);
       this.router.navigate(['/card'], { queryParams: { d: encoded } });
     } catch (err) {
       console.error('[FormComponent] 送出時發生錯誤', err);
@@ -129,5 +156,30 @@ export class FormComponent {
     const arr = this.form.get(arrayName) as FormArray;
     const control = arr.at(index);
     return !!(control && control.invalid && control.touched);
+  }
+
+  private patchForm(data: ManualData): void {
+    this.form.patchValue({ name: data.name }, { emitEvent: false });
+    this.replaceArray('about', data.about);
+    this.replaceArray('qualities', data.qualities);
+    this.replaceArray('fears', data.fears);
+    this.replaceArray('likes', data.likes);
+    this.replaceArray('pressure', data.pressure);
+    this.replaceArray('environment', data.environment);
+  }
+
+  private replaceArray(
+    arrayName: 'about' | 'qualities' | 'fears' | 'likes' | 'pressure' | 'environment',
+    items: string[]
+  ): void {
+    const arr = this.form.get(arrayName) as FormArray;
+    arr.clear();
+    const nextItems = items.length > 0 ? items : [''];
+    nextItems.forEach((item) => arr.push(this.fb.control(item, Validators.required)));
+  }
+
+  private resetExistingManualState(): void {
+    this.existingManualLoaded = false;
+    this.existingManualMessage = '';
   }
 }

@@ -98,13 +98,14 @@ function upsertRecord(data) {
   const headers  = allData[0];
   const nameIdx  = headers.indexOf('name');
   const createdIdx = headers.indexOf('createdAt');
+  const normalizedName = normalizeName(data.name || '');
 
   // 找出是否已有同名列
   let existingRowNum = -1;
   let existingCreatedAt = '';
 
   for (let i = 1; i < allData.length; i++) {
-    if (String(allData[i][nameIdx]) === String(data.name)) {
+    if (normalizeName(String(allData[i][nameIdx] || '')) === normalizedName) {
       existingRowNum   = i + 1; // Sheets 列號 1-indexed
       existingCreatedAt = String(allData[i][createdIdx] || '');
       break;
@@ -118,13 +119,21 @@ function upsertRecord(data) {
          hour12: false
        });
 
-  const row = COLS.map(col => col === 'createdAt' ? createdAt : (data[col] ?? ''));
+  const row = COLS.map(col => {
+    if (col === 'createdAt') return createdAt;
+    if (col === 'name') return String(data[col] ?? '').trim();
+    return data[col] ?? '';
+  });
 
   if (existingRowNum > 0) {
     sheet.getRange(existingRowNum, 1, 1, row.length).setValues([row]);
   } else {
     sheet.appendRow(row);
   }
+}
+
+function normalizeName(name) {
+  return String(name || '').trim().toLowerCase();
 }
 
 // ── 取得（或初始化）工作表 ────────────────────────────────────────────────────
