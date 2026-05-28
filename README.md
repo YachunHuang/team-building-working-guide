@@ -2,6 +2,30 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.8.
 
+## Public Site Deployment (GitHub Pages)
+
+This repository is configured to deploy automatically to GitHub Pages when pushing to `master`.
+
+### One-time repository settings
+
+1. Open repository Settings > Pages
+2. Set Source to `GitHub Actions`
+3. Save
+
+### Deploy flow
+
+1. Push code to `master`
+2. Wait for workflow `Deploy To GitHub Pages` to complete
+3. Open the public site URL:
+
+`https://yachunhuang.github.io/team-building-working-guide/`
+
+### Local build for GitHub Pages
+
+Use this command to verify the same build settings locally:
+
+`npm run build:pages`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
