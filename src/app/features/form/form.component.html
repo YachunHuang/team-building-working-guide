@@ -1,0 +1,188 @@
+﻿<div class="min-h-screen bg-gray-50 py-10 px-4 flex justify-center">
+  <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
+
+    <!-- Header -->
+    <div class="bg-gray-50 px-8 py-8 text-gray-900 text-center relative border-b border-gray-200">
+      <a routerLink="/"
+        class="absolute right-5 top-5 inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-teal-600 text-sm font-mono tracking-widest uppercase px-3 py-1.5 rounded-lg transition">
+        <span class="material-icons text-sm">grid_view</span> 大廳
+      </a>
+      <span class="material-icons mb-2 block text-teal-600" style="font-size:2.5rem">menu_book</span>
+      <h1 class="text-xl font-extrabold mb-1 tracking-tight text-gray-900">關於我的工作使用說明書</h1>
+      <p class="text-gray-500 text-sm">把你的合作偏好與高壓反應寫下來，讓跨職系合作更快建立共識。</p>
+    </div>
+
+    <!-- Form body -->
+    <div class="px-8 py-8">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-6">
+
+        <!-- 姓名 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">姓名 <span class="text-fuchsia-600">*</span></span>
+          </div>
+          <input type="text" formControlName="name" placeholder="請輸入你的名字"
+            class="w-full rounded-lg px-4 py-2.5 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+            [ngClass]="isFieldInvalid('name') ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+          />
+          <p *ngIf="isFieldInvalid('name')" class="text-red-400 text-sm mt-1 font-mono">請填寫姓名</p>
+        </div>
+
+        <!-- 關於我 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">關於我 <span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="about" class="space-y-2">
+            <div *ngFor="let ctrl of about.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="描述自己的工作風格或個性..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('about', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="about.length > 1" type="button" (click)="removeItem('about', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('about')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- 品質 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我最在意的工作品質<span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="qualities" class="space-y-2">
+            <div *ngFor="let ctrl of qualities.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="例：程式碼可讀性、文件完整性..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('qualities', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="qualities.length > minItems('qualities')" type="button" (click)="removeItem('qualities', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('qualities')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- 雷點 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我最害怕遇到的合作情境<span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="fears" class="space-y-2">
+            <div *ngFor="let ctrl of fears.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="例：沒有明確需求就開始開發..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('fears', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="fears.length > minItems('fears')" type="button" (click)="removeItem('fears', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('fears')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- 喜歡 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我喜歡怎麼做？<span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="likes" class="space-y-2">
+            <div *ngFor="let ctrl of likes.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="例：先對齊目標再開始、用圖表溝通..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('likes', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="likes.length > minItems('likes')" type="button" (click)="removeItem('likes', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('likes')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- 壓力大時 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">當我壓力大／忙爆時… <span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="pressure" class="space-y-2">
+            <div *ngFor="let ctrl of pressure.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="描述你在高壓情況下的狀態或需要什麼支援..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('pressure', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="pressure.length > 1" type="button" (click)="removeItem('pressure', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('pressure')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- 好的環境 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我認為好的合作環境是 <span class="text-fuchsia-600">*</span></span>
+          </div>
+          <div formArrayName="environment" class="space-y-2">
+            <div *ngFor="let ctrl of environment.controls; let i = index" class="flex items-center gap-2">
+              <input type="text" [formControlName]="i" placeholder="描述你心目中理想的合作環境..."
+                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
+                [ngClass]="isArrayItemInvalid('environment', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+              />
+              <button *ngIf="environment.length > 1" type="button" (click)="removeItem('environment', i)"
+                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                <span class="material-icons" style="font-size:14px">close</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" (click)="addItem('environment')"
+            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            <span class="material-icons text-base">add</span> 新增一項
+          </button>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+          class="w-full bg-teal-500 hover:bg-teal-400 text-white rounded-xl py-3.5 font-bold font-mono tracking-[0.25em] uppercase text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20">
+          <span class="material-icons text-lg">auto_awesome</span>
+          產生分享卡
+        </button>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+

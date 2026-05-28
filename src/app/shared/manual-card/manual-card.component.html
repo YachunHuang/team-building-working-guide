@@ -1,0 +1,88 @@
+﻿<!-- 卡片外層（flex 包住卡片本體 + 下載按鈕） -->
+<div class="flex flex-col gap-2 h-full">
+
+  <!-- ▼ 截圖範圍：卡片本體 ▼ -->
+  <div #cardBody class="bg-white border border-gray-200 hover:border-gray-400 rounded-xl overflow-hidden flex flex-col flex-1 shadow-lg transition-colors">
+
+    <!-- ── Header：更深背景 + 姓名 ── -->
+    <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex-shrink-0">
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight leading-none mb-1.5">{{ data.name }}</h2>
+      <h3 class="text-sm tracking-[0.45em] font-mono text-gray-400 mb-2 uppercase">關於我的工作使用說明書</h3>
+    </div>
+
+    <!-- ── 關於我 ── -->
+    <div class="px-5 py-3 border-b border-gray-200 flex-shrink-0">
+      <p class="text-sm tracking-[0.4em] font-mono text-fuchsia-600 mb-1.5 uppercase">關於我</p>
+      <ul class="space-y-0.5">
+        <li *ngFor="let a of data.about" class="flex items-start gap-2 text-sm text-gray-700 leading-relaxed">
+          <span class="w-3 shrink-0 text-center text-fuchsia-400">•</span>
+          <span class="min-w-0">{{ a }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── 三欄並排：品質 / 雷點 / 喜歡 ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 border-b border-gray-200 flex-shrink-0">
+      <div class="px-4 py-3">
+        <p class="text-sm tracking-[0.35em] font-mono text-gray-500 mb-2 uppercase">我最在意的工作品質</p>
+        <ul class="space-y-1">
+          <li *ngFor="let q of data.qualities" class="flex items-start gap-2 text-sm text-gray-700 leading-snug">
+            <span class="w-3 shrink-0 text-center text-teal-400">•</span>
+            <span class="min-w-0">{{ q }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="px-4 py-3">
+        <p class="text-sm tracking-[0.35em] font-mono text-gray-500 mb-2 uppercase">我最害怕遇到的合作情境</p>
+        <ul class="space-y-1">
+          <li *ngFor="let f of data.fears" class="flex items-start gap-2 text-sm text-gray-700 leading-snug">
+            <span class="w-3 shrink-0 text-center text-orange-400">•</span>
+            <span class="min-w-0">{{ f }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="px-4 py-3">
+        <p class="text-sm tracking-[0.35em] font-mono text-gray-500 mb-2 uppercase">我喜歡怎麼做？</p>
+        <ul class="space-y-1">
+          <li *ngFor="let l of data.likes" class="flex items-start gap-2 text-sm text-gray-700 leading-snug">
+            <span class="w-3 shrink-0 text-center text-sky-400">•</span>
+            <span class="min-w-0">{{ l }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── 兩欄並排：壓力 / 環境 ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-200 flex-1">
+      <div class="px-4 py-3">
+        <p class="text-sm tracking-[0.35em] font-mono text-gray-500 mb-2 uppercase">當我壓力大／忙爆時…</p>
+        <ul class="space-y-1">
+          <li *ngFor="let p of data.pressure" class="flex items-start gap-2 text-sm text-gray-600 leading-snug">
+            <span class="w-3 shrink-0 text-center text-amber-400">•</span>
+            <span class="min-w-0">{{ p }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="px-4 py-3">
+        <p class="text-sm tracking-[0.35em] font-mono text-gray-500 mb-2 uppercase">我認為好的合作環境是</p>
+        <ul class="space-y-1">
+          <li *ngFor="let e of data.environment" class="flex items-start gap-2 text-sm text-gray-600 leading-snug">
+            <span class="w-3 shrink-0 text-center text-emerald-400">•</span>
+            <span class="min-w-0">{{ e }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- ▲ 截圖範圍結束 ▲ -->
+
+  <!-- 下載按鈕 -->
+  <button (click)="downloadCard()" [disabled]="isDownloading"
+    class="flex-shrink-0 w-full inline-flex items-center justify-center gap-1.5 bg-teal-500 hover:bg-teal-400 text-zinc-900 text-sm font-mono font-bold tracking-[0.3em] uppercase px-4 py-2 rounded-xl transition disabled:opacity-60">
+    <span class="material-icons text-sm">download</span>
+    {{ isDownloading ? '產生圖片中...' : '下載小卡圖片' }}
+  </button>
+
+</div>
+
