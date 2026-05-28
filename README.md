@@ -2,29 +2,27 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.8.
 
-## Public Site Deployment (GitHub Pages)
+## Public Site Deployment (Azure Static Web Apps)
 
-This repository is configured to deploy automatically to GitHub Pages when pushing to `master`.
+This repository is configured to deploy automatically to Azure Static Web Apps when pushing to `master`.
 
 ### One-time repository settings
 
-1. Open repository Settings > Pages
-2. Set Source to `GitHub Actions`
-3. Save
+1. Open repository Settings > Secrets and variables > Actions
+2. Add secret `AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_DUNE_0A20F7A1E`
+3. Paste the deployment token from your Azure Static Web App resource
 
 ### Deploy flow
 
 1. Push code to `master`
-2. Wait for workflow `Deploy To GitHub Pages` to complete
-3. Open the public site URL:
+2. Wait for workflow `Azure Static Web Apps CI/CD` to complete
+3. Open your Azure Static Web App URL
 
-`https://yachunhuang.github.io/team-building-working-guide/`
+### Local build
 
-### Local build for GitHub Pages
+Use this command to verify build output locally:
 
-Use this command to verify the same build settings locally:
-
-`npm run build:pages`
+`npm run build`
 
 ## Development server
 
