@@ -13,6 +13,7 @@
  */
 
 const SHEET_NAME = 'manuals';
+const ALLOWED_SHEET_NAME = 'allowedMembers'; // 允許新增資料的成員名單工作表
 const COLS = ['name', 'about', 'qualities', 'fears', 'likes', 'pressure', 'environment', 'createdAt'];
 
 // ── GET handler ───────────────────────────────────────────────────────────────
@@ -23,6 +24,9 @@ function doGet(e) {
   let result;
   if (action === 'getAll') {
     result = getAllRecords();
+  } else if (action === 'getAllowedNames') {
+    // 讀取 allowedMembers 工作表中的允許名單
+    result = getAllowedNames();
   } else if (action === 'save') {
     // 寫入也走 GET，讓 JSONP 完全繞過 CORS preflight
     try {
@@ -35,8 +39,18 @@ function doGet(e) {
         pressure:    e.parameter.pressure    || '',
         environment: e.parameter.environment || '',
       };
-      upsertRecord(data);
-      result = { status: 'success' };
+      // ── 伺服器端白名單驗證（防止繞過前端直接呼叫 API）──
+      const allowed = getAllowedNames();
+      const normalizedInput = normalizeName(data.name);
+      const isAllowed = allowed.names.some(function(n) {
+        return normalizeName(n) === normalizedInput;
+      });
+      if (!isAllowed) {
+        result = { status: 'error', message: 'NAME_NOT_ALLOWED' };
+      } else {
+        upsertRecord(data);
+        result = { status: 'success' };
+      }
     } catch (err) {
       result = { status: 'error', message: String(err) };
     }
@@ -134,6 +148,47 @@ function upsertRecord(data) {
 
 function normalizeName(name) {
   return String(name || '').trim().toLowerCase();
+}
+
+// ── 讀取允許名單（allowedMembers 工作表，第一欄為 name）────────────────────────
+function getAllowedNames() {
+  const sheet = getOrCreateAllowedMembersSheet();
+  const values = sheet.getDataRange().getValues();
+
+  // 第一列為標題列，從第二列起取 name 欄位
+  const names = values.slice(1)
+    .map(row => String(row[0] || '').trim())
+    .filter(n => n.length > 0);
+
+  return { status: 'success', names };
+}
+
+// ── 取得（或初始化）allowedMembers 工作表 ─────────────────────────────────────
+function getOrCreateAllowedMembersSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(ALLOWED_SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(ALLOWED_SHEET_NAME);
+    sheet.appendRow(['name']);
+    // 預先寫入初始允許名單
+    const initialNames = [
+      ['Ken'], ['Vi'], ['Benji'],
+      ['Gina'], ['Min'], ['Joy'],
+      ['Joey'], ['Zora'], ['Debbie'],
+      ['Jeffery'], ['Tina'], ['Jane'],
+      ['Jay'], ['Mia'], ['Kiwi'],
+      ['Savana'], ['Rita'], ['Wennie'],
+    ];
+    sheet.getRange(2, 1, initialNames.length, 1).setValues(initialNames);
+    // 設定標題列樣式
+    sheet.setFrozenRows(1);
+    const headerRange = sheet.getRange(1, 1, 1, 1);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#f0a500');
+  }
+
+  return sheet;
 }
 
 // ── 取得（或初始化）工作表 ────────────────────────────────────────────────────

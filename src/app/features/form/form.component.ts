@@ -1,15 +1,18 @@
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { ManualData, StorageService } from '../../services/storage.service';
 import { Router, RouterModule } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { FooterComponent } from '../../shared/footer/footer.component';
 
 @Component({
@@ -19,12 +22,35 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
 })
-export class FormComponent {
+export class FormComponent implements OnInit {
   form: FormGroup;
   existingManualLoaded = false;
   existingManualMessage = '';
   /** 控制自訂離開確認 Modal 的顯示狀態 */
   showLeaveConfirm = false;
+  /** 表單送出中的狀態，防止重複送出並顯示 loading 效果 */
+  isSubmitting = false;
+  /** 白名單載入中的狀態，顯示載入提示文字用 */
+  allowedNamesLoading = true;
+
+  /**
+   * 允許新增資料的英文名字白名單（動態從 Sheets 載入，不區分大小寫）。
+   * 初始為空 Set，載入完成後填入。
+   */
+  private allowedNames = new Set<string>();
+
+  /**
+   * 自訂驗證器：檢查輸入的名字是否在允許的白名單內（不區分大小寫）。
+   * 白名單尚未載入完成時（allowedNames 為空），暫時放行不驗證。
+   */
+  private allowedNameValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value?.trim().toLowerCase() ?? '';
+      if (!value) return null; // 空值由 required 驗證器負責
+      if (this.allowedNames.size === 0) return null; // 白名單尚未載入，暫時放行
+      return this.allowedNames.has(value) ? null : { notAllowed: true };
+    };
+  }
   private readonly minItemsMap: Record<'about' | 'qualities' | 'fears' | 'likes' | 'pressure' | 'environment', number> = {
     about: 1,
     qualities: 3,
@@ -34,9 +60,28 @@ export class FormComponent {
     environment: 1,
   };
 
+  /**
+   * 元件初始化：從 Google Sheets 載入允許名單，
+   * 載入完成後觸發 name 欄位重新驗證以確保白名單驗證生效。
+   */
+  async ngOnInit(): Promise<void> {
+    try {
+      const names = await this.storageService.getAllowedNames();
+      // 將名單全部轉小寫後存入 Set
+      names.forEach(n => this.allowedNames.add(n.trim().toLowerCase()));
+    } catch (err) {
+      console.error('[FormComponent] 載入允許名單失敗', err);
+    } finally {
+      this.allowedNamesLoading = false;
+      // 白名單載入完成後重新觸發驗證，讓驗證器能正確判斷
+      this.form.get('name')?.updateValueAndValidity();
+    }
+  }
+
   constructor(private fb: FormBuilder, private router: Router, private storageService: StorageService) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
+      // name 欄位同時套用必填與白名單驗證
+      name: ['', [Validators.required, this.allowedNameValidator()]],
       about: this.fb.array([this.fb.control('', Validators.required)]),
       qualities: this.fb.array([
         this.fb.control('', Validators.required),
@@ -100,6 +145,10 @@ export class FormComponent {
       return;
     }
 
+    // 白名單載入中或名字不在白名單內，直接阻擋，不送出任何請求
+    if (this.allowedNamesLoading) return;
+    if (this.allowedNames.size > 0 && !this.allowedNames.has(trimmedName.toLowerCase())) return;
+
     nameControl?.setValue(trimmedName, { emitEvent: false });
 
     try {
@@ -120,6 +169,9 @@ export class FormComponent {
       console.warn('[FormComponent] 表單驗證未通過', this.form.errors, this.form.value);
       return;
     }
+    // 防止重複送出
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
 
     try {
       const raw = this.form.value;
@@ -143,6 +195,7 @@ export class FormComponent {
       this.router.navigate(['/card'], { queryParams: { d: encoded } });
     } catch (err) {
       console.error('[FormComponent] 送出時發生錯誤', err);
+      this.isSubmitting = false;
     }
   }
 

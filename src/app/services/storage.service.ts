@@ -56,6 +56,19 @@ export class StorageService {
   }
 
   /**
+   * 從 allowedMembers 工作表讀取允許新增資料的成員名單。
+   * 未設定 scriptUrl 時回傳空陣列（不限制）。
+   */
+  async getAllowedNames(): Promise<string[]> {
+    if (!this.isConfigured) return [];
+    const data = await this.jsonpRequest('getAllowedNames') as { status?: string; names?: string[] } | null;
+    if (data?.status === 'success' && Array.isArray(data.names)) {
+      return data.names;
+    }
+    return [];
+  }
+
+  /**
    * 訂閱資料更新（Sheets 版：每 10 秒輪詢）。
    * 未設定 scriptUrl 時自動 fallback 至 localStorage。
    * 回傳 unsubscribe 函式，元件 ngOnDestroy 時呼叫。

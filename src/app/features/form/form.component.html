@@ -33,7 +33,8 @@
               <span class="material-icons text-sm">search</span> 取得資料
             </button>
           </div>
-          <p *ngIf="isFieldInvalid('name')" class="text-red-400 text-sm mt-1 font-mono">請填寫英文名字</p>
+          <p *ngIf="isFieldInvalid('name') && form.get('name')?.errors?.['required']" class="text-red-400 text-sm mt-1 font-mono">請填寫英文名字</p>
+          <p *ngIf="isFieldInvalid('name') && form.get('name')?.errors?.['notAllowed']" class="text-red-400 text-sm mt-1 font-mono">此名字不在允許名單內，無法新增資料。</p>
           <p *ngIf="!isFieldInvalid('name') && existingManualLoaded" class="text-violet-400 text-sm mt-1">{{ existingManualMessage }}</p>
           <p *ngIf="!isFieldInvalid('name') && !existingManualLoaded" class="text-zinc-600 text-sm mt-1">輸入英文名字後，點擊「取得資料」可載入已儲存的內容。</p>
         </div>
@@ -183,10 +184,20 @@
         </div>
 
         <!-- Submit -->
-        <button type="submit"
-          class="w-full bg-transparent border border-violet-500/60 hover:border-violet-400 hover:bg-zinc-700/40 text-violet-400 hover:text-violet-300 rounded-xl py-3.5 font-bold font-mono tracking-[0.25em] uppercase text-sm transition flex items-center justify-center gap-2">
-          <span class="material-icons text-lg">auto_awesome</span>
-          產生說明書
+        <button type="submit" [disabled]="isSubmitting"
+          class="w-full bg-transparent border rounded-xl py-3.5 font-bold font-mono tracking-[0.25em] uppercase text-sm transition flex items-center justify-center gap-2"
+          [ngClass]="isSubmitting
+            ? 'border-zinc-600 text-zinc-500 cursor-not-allowed'
+            : 'border-violet-500/60 hover:border-violet-400 hover:bg-zinc-700/40 text-violet-400 hover:text-violet-300'">
+          <!-- loading 中顯示旋轉圖示與提示文字 -->
+          <ng-container *ngIf="isSubmitting; else defaultLabel">
+            <span class="material-icons text-lg animate-spin">autorenew</span>
+            儲存中，請稍候…
+          </ng-container>
+          <ng-template #defaultLabel>
+            <span class="material-icons text-lg">auto_awesome</span>
+            產生說明書
+          </ng-template>
         </button>
 
       </form>
