@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ManualData, StorageService } from '../../services/storage.service';
 
 import { CommonModule } from '@angular/common';
+import { FooterComponent } from '../../shared/footer/footer.component';
 import { ManualCardComponent } from '../../shared/manual-card/manual-card.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-lobby',
   standalone: true,
-  imports: [CommonModule, RouterModule, ManualCardComponent],
+  imports: [CommonModule, RouterModule, ManualCardComponent, FooterComponent],
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.scss',
 })

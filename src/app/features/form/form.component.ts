@@ -10,11 +10,12 @@ import { Router, RouterModule } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FooterComponent } from '../../shared/footer/footer.component';
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FooterComponent],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
 })
@@ -22,6 +23,8 @@ export class FormComponent {
   form: FormGroup;
   existingManualLoaded = false;
   existingManualMessage = '';
+  /** 控制自訂離開確認 Modal 的顯示狀態 */
+  showLeaveConfirm = false;
   private readonly minItemsMap: Record<'about' | 'qualities' | 'fears' | 'likes' | 'pressure' | 'environment', number> = {
     about: 1,
     qualities: 3,
@@ -86,7 +89,7 @@ export class FormComponent {
     }
   }
 
-  async onNameBlur(): Promise<void> {
+  async fetchExistingByName(): Promise<void> {
     const nameControl = this.form.get('name');
     const trimmedName = nameControl?.value?.trim() ?? '';
 
@@ -176,6 +179,51 @@ export class FormComponent {
     arr.clear();
     const nextItems = items.length > 0 ? items : [''];
     nextItems.forEach((item) => arr.push(this.fb.control(item, Validators.required)));
+  }
+
+  /**
+   * 判斷表單是否有任何欄位已填寫內容（非空白）。
+   * 用於導航離開前的提示判斷。
+   */
+  private hasFormContent(): boolean {
+    const raw = this.form.getRawValue();
+    // 檢查 name 欄位
+    if (raw.name?.trim()) return true;
+    // 檢查所有 FormArray 欄位是否有任一項目有值
+    const arrayFields: (keyof typeof raw)[] = ['about', 'qualities', 'fears', 'likes', 'pressure', 'environment'];
+    for (const field of arrayFields) {
+      const arr = raw[field] as string[];
+      if (Array.isArray(arr) && arr.some((v: string) => v?.trim())) return true;
+    }
+    return false;
+  }
+
+  /**
+   * 導航回大廳前，若表單已有填寫內容則開啟自訂確認 Modal。
+   * 避免使用者意外遺失未送出的資料。
+   */
+  navigateToLobby(): void {
+    if (this.hasFormContent()) {
+      // 有填寫內容時顯示自訂風格確認 Modal
+      this.showLeaveConfirm = true;
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
+
+  /**
+   * 使用者於確認 Modal 點擊「繼續填寫」：關閉 Modal 並留在頁面。
+   */
+  onLeaveCancel(): void {
+    this.showLeaveConfirm = false;
+  }
+
+  /**
+   * 使用者於確認 Modal 點擊「確定離開」：關閉 Modal 並導航至大廳。
+   */
+  onLeaveConfirm(): void {
+    this.showLeaveConfirm = false;
+    this.router.navigate(['/']);
   }
 
   private resetExistingManualState(): void {

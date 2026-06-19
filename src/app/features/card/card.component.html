@@ -1,10 +1,10 @@
-﻿<div class="min-h-screen bg-gray-50 py-8 px-4 flex flex-col items-center">
+﻿<div class="min-h-screen bg-zinc-900 py-8 px-4 pb-14 flex flex-col items-center">
 
   <!-- 錯誤狀態 -->
-  <div *ngIf="errorMsg" class="bg-white border border-gray-200 rounded-xl p-10 text-center max-w-sm mt-16">
-    <span class="material-icons text-5xl text-gray-400 mb-4 block">sentiment_dissatisfied</span>
-    <p class="text-gray-600 mb-6">{{ errorMsg }}</p>
-    <a routerLink="/form" class="inline-flex items-center gap-1 text-teal-600 font-mono text-sm tracking-widest uppercase hover:text-teal-700 transition">
+  <div *ngIf="errorMsg" class="bg-zinc-800 border border-zinc-700 rounded-xl p-10 text-center max-w-sm mt-16">
+    <span class="material-icons text-5xl text-zinc-600 mb-4 block">sentiment_dissatisfied</span>
+    <p class="text-zinc-400 mb-6">{{ errorMsg }}</p>
+    <a routerLink="/form" class="inline-flex items-center gap-1 text-violet-400 font-mono text-sm tracking-widest uppercase hover:text-violet-300 transition">
       <span class="material-icons text-base">arrow_back</span> 回到填寫頁
     </a>
   </div>
@@ -14,10 +14,10 @@
 
     <!-- 操作列 -->
     <div class="flex justify-between items-center w-full max-w-sm mb-4">
-      <a routerLink="/form" class="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 font-mono text-sm tracking-widest uppercase bg-white border border-gray-300 rounded-lg px-3 py-1.5 transition">
+      <a routerLink="/form" class="inline-flex items-center gap-1 text-zinc-400 hover:text-gray-100 font-mono text-sm tracking-widest uppercase bg-zinc-800 border border-zinc-600 rounded-lg px-3 py-1.5 transition">
         <span class="material-icons text-base">arrow_back</span> 重新填寫
       </a>
-      <a routerLink="/" class="inline-flex items-center gap-1.5 text-teal-600 hover:text-teal-700 font-mono text-sm tracking-widest uppercase bg-white border border-gray-300 rounded-lg px-3 py-1.5 transition">
+      <a routerLink="/" class="inline-flex items-center gap-1.5 text-violet-400 hover:text-violet-300 font-mono text-sm tracking-widest uppercase bg-zinc-800 border border-zinc-600 rounded-lg px-3 py-1.5 transition">
         <span class="material-icons text-base">grid_view</span> 大廳
       </a>
     </div>
@@ -27,4 +27,6 @@
     </div>
 
   </ng-container>
+
+  <app-footer />
 </div>

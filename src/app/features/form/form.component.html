@@ -1,57 +1,63 @@
-﻿<div class="min-h-screen bg-gray-50 py-10 px-4 flex justify-center">
-  <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl">
+﻿<div class="min-h-screen bg-zinc-900 py-10 px-4 pb-14 flex justify-center">
+  <div class="bg-zinc-800 border border-zinc-700 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl shadow-black/40">
 
     <!-- Header -->
-    <div class="bg-gray-50 px-8 py-8 text-gray-900 text-center relative border-b border-gray-200">
-      <a routerLink="/"
-        class="absolute right-5 top-5 inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-teal-600 text-sm font-mono tracking-widest uppercase px-3 py-1.5 rounded-lg transition">
+    <div class="bg-zinc-900 px-8 py-8 text-center relative border-b border-zinc-700">
+      <!-- 回大廳前，若表單已有填寫內容則提示確認 -->
+      <a (click)="navigateToLobby()" style="cursor:pointer"
+        class="absolute right-5 top-5 inline-flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-violet-400 text-sm font-mono tracking-widest uppercase px-3 py-1.5 rounded-lg transition">
         <span class="material-icons text-sm">grid_view</span> 大廳
       </a>
-      <span class="material-icons mb-2 block text-teal-600" style="font-size:2.5rem">menu_book</span>
-      <h1 class="text-xl font-extrabold mb-1 tracking-tight text-gray-900">關於我的工作使用說明書</h1>
-      <p class="text-gray-500 text-sm">讀心術很累，看這本最快！在事情多到爆炸、壓力山大的時候，想合作得順暢，關鍵在於我們能略懂彼此的眉角</p>
+      <span class="material-icons mb-2 block text-violet-400" style="font-size:2.5rem">menu_book</span>
+      <h1 class="text-xl font-extrabold mb-1 tracking-tight text-gray-100">關於我的工作使用說明書</h1>
+      <p class="text-zinc-500 text-sm">唯有先懂得如何與自己共處，才能真正發揮團隊的加乘效果。</p>
     </div>
 
     <!-- Form body -->
     <div class="px-8 py-8">
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-6">
 
-        <!-- 姓名 -->
+        <!-- 英文名字 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">姓名 <span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-violet-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">英文名字 <span class="text-violet-400">*</span></span>
           </div>
-          <input type="text" formControlName="name" placeholder="請輸入你的名字"
-            (blur)="onNameBlur()"
-            class="w-full rounded-lg px-4 py-2.5 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-            [ngClass]="isFieldInvalid('name') ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
-          />
-          <p *ngIf="isFieldInvalid('name')" class="text-red-400 text-sm mt-1 font-mono">請填寫姓名</p>
-          <p *ngIf="!isFieldInvalid('name') && existingManualLoaded" class="text-teal-600 text-sm mt-1">{{ existingManualMessage }}</p>
-          <p *ngIf="!isFieldInvalid('name') && !existingManualLoaded" class="text-gray-400 text-sm mt-1">若已有同名資料，離開欄位後會自動帶入供你編輯更新。</p>
+          <div class="flex gap-2">
+            <input type="text" formControlName="name" placeholder="請輸入你的英文名字"
+              class="flex-1 rounded-lg px-4 py-2.5 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+              [ngClass]="isFieldInvalid('name') ? 'border-red-500' : 'border-zinc-700 focus:border-violet-500'"
+            />
+            <button type="button" (click)="fetchExistingByName()"
+              class="rounded-lg px-3 py-2.5 bg-zinc-900 border border-zinc-600 text-zinc-400 hover:bg-zinc-700 hover:border-violet-500/60 hover:text-violet-400 text-sm font-mono transition flex items-center gap-1 whitespace-nowrap">
+              <span class="material-icons text-sm">search</span> 取得資料
+            </button>
+          </div>
+          <p *ngIf="isFieldInvalid('name')" class="text-red-400 text-sm mt-1 font-mono">請填寫英文名字</p>
+          <p *ngIf="!isFieldInvalid('name') && existingManualLoaded" class="text-violet-400 text-sm mt-1">{{ existingManualMessage }}</p>
+          <p *ngIf="!isFieldInvalid('name') && !existingManualLoaded" class="text-zinc-600 text-sm mt-1">輸入英文名字後，點擊「取得資料」可載入已儲存的內容。</p>
         </div>
 
-        <!-- 關於我 -->
+        <!-- 工作中的我  -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">關於我 <span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-violet-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">工作中的我  <span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="about" class="space-y-2">
             <div *ngFor="let ctrl of about.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="描述自己的工作風格或個性..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('about', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('about', i) ? 'border-red-500' : 'border-zinc-700 focus:border-violet-500'"
               />
               <button *ngIf="about.length > 1" type="button" (click)="removeItem('about', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('about')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-violet-500/50 hover:text-violet-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
@@ -59,23 +65,23 @@
         <!-- 品質 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我最在意的工作品質<span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-cyan-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">我最在意的工作品質<span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="qualities" class="space-y-2">
             <div *ngFor="let ctrl of qualities.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="例：程式碼可讀性、文件完整性..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('qualities', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('qualities', i) ? 'border-red-500' : 'border-zinc-700 focus:border-cyan-500'"
               />
               <button *ngIf="qualities.length > minItems('qualities')" type="button" (click)="removeItem('qualities', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('qualities')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-cyan-500/50 hover:text-cyan-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
@@ -83,23 +89,23 @@
         <!-- 雷點 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我最害怕遇到的合作情境<span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-amber-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">我最害怕遇到的合作情境<span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="fears" class="space-y-2">
             <div *ngFor="let ctrl of fears.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="例：沒有明確需求就開始開發..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('fears', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('fears', i) ? 'border-red-500' : 'border-zinc-700 focus:border-amber-500'"
               />
               <button *ngIf="fears.length > minItems('fears')" type="button" (click)="removeItem('fears', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('fears')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-amber-500/50 hover:text-amber-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
@@ -107,23 +113,23 @@
         <!-- 喜歡 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我喜歡怎麼做？<span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-emerald-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">我喜歡怎麼做？<span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="likes" class="space-y-2">
             <div *ngFor="let ctrl of likes.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="例：先對齊目標再開始、用圖表溝通..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('likes', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('likes', i) ? 'border-red-500' : 'border-zinc-700 focus:border-emerald-500'"
               />
               <button *ngIf="likes.length > minItems('likes')" type="button" (click)="removeItem('likes', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('likes')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-emerald-500/50 hover:text-emerald-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
@@ -131,23 +137,23 @@
         <!-- 壓力大時 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">當我壓力大／忙爆時… <span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-rose-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">當我壓力大／忙爆時… <span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="pressure" class="space-y-2">
             <div *ngFor="let ctrl of pressure.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="描述你在高壓情況下的狀態或需要什麼支援..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('pressure', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('pressure', i) ? 'border-red-500' : 'border-zinc-700 focus:border-rose-500'"
               />
               <button *ngIf="pressure.length > 1" type="button" (click)="removeItem('pressure', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('pressure')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-rose-500/50 hover:text-rose-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
@@ -155,37 +161,68 @@
         <!-- 好的環境 -->
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <div class="w-[2px] h-3.5 bg-teal-400 flex-shrink-0 rounded-full"></div>
-            <span class="text-sm tracking-[0.4em] font-mono text-gray-600 uppercase">我認為好的合作環境是 <span class="text-fuchsia-600">*</span></span>
+            <div class="w-[2px] h-3.5 bg-sky-400 flex-shrink-0 rounded-full"></div>
+            <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">我認為好的合作環境是 <span class="text-violet-400">*</span></span>
           </div>
           <div formArrayName="environment" class="space-y-2">
             <div *ngFor="let ctrl of environment.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="描述你心目中理想的合作環境..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-900 bg-gray-50 focus:outline-none transition text-sm placeholder:text-gray-400 border"
-                [ngClass]="isArrayItemInvalid('environment', i) ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'"
+                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                [ngClass]="isArrayItemInvalid('environment', i) ? 'border-red-500' : 'border-zinc-700 focus:border-sky-500'"
               />
               <button *ngIf="environment.length > 1" type="button" (click)="removeItem('environment', i)"
-                class="w-7 h-7 rounded-lg bg-gray-100 border border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500 transition flex items-center justify-center flex-shrink-0">
+                class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
             </div>
           </div>
           <button type="button" (click)="addItem('environment')"
-            class="mt-2 w-full border border-dashed border-gray-300 text-gray-500 hover:border-teal-500 hover:text-teal-600 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
+            class="mt-2 w-full border border-dashed border-zinc-600 text-zinc-500 hover:border-sky-500/50 hover:text-sky-400 rounded-lg py-2 text-sm font-mono tracking-wider transition flex items-center justify-center gap-1 uppercase">
             <span class="material-icons text-base">add</span> 新增一項
           </button>
         </div>
 
         <!-- Submit -->
         <button type="submit"
-          class="w-full bg-teal-500 hover:bg-teal-400 text-white rounded-xl py-3.5 font-bold font-mono tracking-[0.25em] uppercase text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20">
+          class="w-full bg-transparent border border-violet-500/60 hover:border-violet-400 hover:bg-zinc-700/40 text-violet-400 hover:text-violet-300 rounded-xl py-3.5 font-bold font-mono tracking-[0.25em] uppercase text-sm transition flex items-center justify-center gap-2">
           <span class="material-icons text-lg">auto_awesome</span>
-          產生分享卡
+          產生說明書
         </button>
 
       </form>
     </div>
 
   </div>
+
+  <app-footer />
 </div>
 
+<!-- 自訂確認 Modal：離開前提示（風格與站台一致） -->
+<div *ngIf="showLeaveConfirm"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+  <div class="bg-zinc-800 border border-zinc-700 rounded-2xl shadow-2xl shadow-black/60 w-full max-w-sm overflow-hidden">
+    <!-- Modal Header -->
+    <div class="bg-zinc-900 px-6 py-5 border-b border-zinc-700 flex items-center gap-3">
+      <span class="material-icons text-amber-400" style="font-size:1.6rem">warning_amber</span>
+      <h2 class="text-base font-bold font-mono tracking-wide text-gray-100">確認離開</h2>
+    </div>
+    <!-- Modal Body -->
+    <div class="px-6 py-6">
+      <p class="text-zinc-300 text-sm leading-relaxed">
+        有尚未送出的內容<br/>
+        <span class="text-amber-400 font-mono font-semibold">離開前請確認是否有送出唷！</span>
+      </p>
+    </div>
+    <!-- Modal Footer -->
+    <div class="px-6 pb-6 flex gap-3 justify-end">
+      <button type="button" (click)="onLeaveCancel()"
+        class="rounded-lg px-4 py-2 text-sm font-mono border border-zinc-600 text-zinc-400 hover:bg-zinc-700 hover:text-gray-100 transition">
+        繼續填寫
+      </button>
+      <button type="button" (click)="onLeaveConfirm()"
+        class="rounded-lg px-4 py-2 text-sm font-mono border border-violet-500/60 text-violet-400 hover:bg-zinc-700/60 hover:border-violet-400 hover:text-violet-300 transition">
+        確定離開
+      </button>
+    </div>
+  </div>
+</div>

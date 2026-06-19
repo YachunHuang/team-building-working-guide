@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ManualData, StorageService } from '../../services/storage.service';
 
 import { CommonModule } from '@angular/common';
+import { FooterComponent } from '../../shared/footer/footer.component';
 import { ManualCardComponent } from '../../shared/manual-card/manual-card.component';
 
 export type { ManualData };
@@ -10,7 +11,7 @@ export type { ManualData };
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, ManualCardComponent],
+  imports: [CommonModule, RouterModule, ManualCardComponent, FooterComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
 })
