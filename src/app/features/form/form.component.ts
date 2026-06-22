@@ -53,9 +53,9 @@ export class FormComponent implements OnInit {
   }
   private readonly minItemsMap: Record<'about' | 'qualities' | 'fears' | 'likes' | 'pressure' | 'environment', number> = {
     about: 1,
-    qualities: 3,
-    fears: 3,
-    likes: 3,
+    qualities: 1,
+    fears: 1,
+    likes: 1,
     pressure: 1,
     environment: 1,
   };

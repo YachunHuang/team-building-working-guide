@@ -13,8 +13,7 @@
       <p class="text-zinc-500 text-sm">唯有先懂得如何與自己共處，才能真正發揮團隊的加乘效果。</p>
     </div>
 
-    <!-- Form body -->
-    <div class="px-8 py-8">
+    <div class="px-4 py-8 sm:px-8">
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-6">
 
         <!-- 英文名字 -->
@@ -23,13 +22,13 @@
             <div class="w-[2px] h-3.5 bg-violet-400 flex-shrink-0 rounded-full"></div>
             <span class="text-sm tracking-[0.4em] font-mono text-zinc-400 uppercase">英文名字 <span class="text-violet-400">*</span></span>
           </div>
-          <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-2">
             <input type="text" formControlName="name" placeholder="請輸入你的英文名字"
               class="flex-1 rounded-lg px-4 py-2.5 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
               [ngClass]="isFieldInvalid('name') ? 'border-red-500' : 'border-zinc-700 focus:border-violet-500'"
             />
             <button type="button" (click)="fetchExistingByName()"
-              class="rounded-lg px-3 py-2.5 bg-zinc-900 border border-zinc-600 text-zinc-400 hover:bg-zinc-700 hover:border-violet-500/60 hover:text-violet-400 text-sm font-mono transition flex items-center gap-1 whitespace-nowrap">
+              class="w-full sm:w-auto rounded-lg px-3 py-2.5 bg-zinc-900 border border-zinc-600 text-zinc-400 hover:bg-zinc-700 hover:border-violet-500/60 hover:text-violet-400 text-sm font-mono transition flex items-center justify-center gap-1 whitespace-nowrap">
               <span class="material-icons text-sm">search</span> 取得資料
             </button>
           </div>
@@ -48,10 +47,10 @@
           <div formArrayName="about" class="space-y-2">
             <div *ngFor="let ctrl of about.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="描述自己的工作風格或個性..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('about', i) ? 'border-red-500' : 'border-zinc-700 focus:border-violet-500'"
               />
-              <button *ngIf="about.length > 1" type="button" (click)="removeItem('about', i)"
+              <button *ngIf="about.length > minItems('about')" type="button" (click)="removeItem('about', i)"
                 class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
@@ -72,7 +71,7 @@
           <div formArrayName="qualities" class="space-y-2">
             <div *ngFor="let ctrl of qualities.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="例：程式碼可讀性、文件完整性..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('qualities', i) ? 'border-red-500' : 'border-zinc-700 focus:border-cyan-500'"
               />
               <button *ngIf="qualities.length > minItems('qualities')" type="button" (click)="removeItem('qualities', i)"
@@ -95,8 +94,8 @@
           </div>
           <div formArrayName="fears" class="space-y-2">
             <div *ngFor="let ctrl of fears.controls; let i = index" class="flex items-center gap-2">
-              <input type="text" [formControlName]="i" placeholder="例：沒有明確需求就開始開發..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+             <input type="text" [formControlName]="i" placeholder="例：沒有明確需求就開始開發..."
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('fears', i) ? 'border-red-500' : 'border-zinc-700 focus:border-amber-500'"
               />
               <button *ngIf="fears.length > minItems('fears')" type="button" (click)="removeItem('fears', i)"
@@ -119,8 +118,8 @@
           </div>
           <div formArrayName="likes" class="space-y-2">
             <div *ngFor="let ctrl of likes.controls; let i = index" class="flex items-center gap-2">
-              <input type="text" [formControlName]="i" placeholder="例：先對齊目標再開始、用圖表溝通..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+             <input type="text" [formControlName]="i" placeholder="例：先對齊目標再開始、用圖表溝通..."
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('likes', i) ? 'border-red-500' : 'border-zinc-700 focus:border-emerald-500'"
               />
               <button *ngIf="likes.length > minItems('likes')" type="button" (click)="removeItem('likes', i)"
@@ -143,11 +142,11 @@
           </div>
           <div formArrayName="pressure" class="space-y-2">
             <div *ngFor="let ctrl of pressure.controls; let i = index" class="flex items-center gap-2">
-              <input type="text" [formControlName]="i" placeholder="描述你在高壓情況下的狀態或需要什麼支援..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+             <input type="text" [formControlName]="i" placeholder="描述你在高壓情況下的狀態或需要什麼支援..."
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('pressure', i) ? 'border-red-500' : 'border-zinc-700 focus:border-rose-500'"
               />
-              <button *ngIf="pressure.length > 1" type="button" (click)="removeItem('pressure', i)"
+              <button *ngIf="pressure.length > minItems('pressure')" type="button" (click)="removeItem('pressure', i)"
                 class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
@@ -168,10 +167,10 @@
           <div formArrayName="environment" class="space-y-2">
             <div *ngFor="let ctrl of environment.controls; let i = index" class="flex items-center gap-2">
               <input type="text" [formControlName]="i" placeholder="描述你心目中理想的合作環境..."
-                class="flex-1 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
+                class="flex-1 min-w-0 rounded-lg px-4 py-2 text-gray-100 bg-zinc-900 focus:outline-none transition text-sm placeholder:text-zinc-600 border"
                 [ngClass]="isArrayItemInvalid('environment', i) ? 'border-red-500' : 'border-zinc-700 focus:border-sky-500'"
               />
-              <button *ngIf="environment.length > 1" type="button" (click)="removeItem('environment', i)"
+              <button *ngIf="environment.length > minItems('environment')" type="button" (click)="removeItem('environment', i)"
                 class="w-7 h-7 rounded-lg bg-zinc-700 border border-zinc-600 text-zinc-400 hover:border-red-400 hover:text-red-400 transition flex items-center justify-center flex-shrink-0">
                 <span class="material-icons" style="font-size:14px">close</span>
               </button>
